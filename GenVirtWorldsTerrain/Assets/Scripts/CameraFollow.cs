@@ -10,7 +10,7 @@ public class CameraFollow : MonoBehaviour
     private Vector3 position;
     private void Start()
     {
-        Cursor.visible = false;
+        //Cursor.visible = false;
     }
     // Update is called once per frame
     void Update()

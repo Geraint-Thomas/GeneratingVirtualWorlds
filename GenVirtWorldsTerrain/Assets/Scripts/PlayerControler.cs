@@ -85,7 +85,7 @@ public class PlayerControler : MonoBehaviour
 
        
         //jump check
-        if (Input.GetKeyDown(KeyCode.Space))//&& grounded)
+        if (Keyboard.current.spaceKey.wasPressedThisFrame)//&& grounded)
         {
             rigidbody.AddForce(transform.up * jumpHeight, ForceMode.Impulse);
         }

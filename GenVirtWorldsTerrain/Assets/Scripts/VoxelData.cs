@@ -6,12 +6,12 @@ using System.Collections.Generic;
 public static class VoxelData 
 {
 
-    public static readonly int chunkWidth = 5;
-    public static readonly int chunkHeight = 10;
+    public static int chunkWidth = 5;
+    public static int chunkHeight = 25;
 
     public static readonly int worldSizeInChunks = 100;
 
-    public static readonly int viewDistanceInChunks = 10;
+    public static int viewDistanceInChunks = 10;
 
     public static int worldSizeInVoxels
     {
@@ -67,4 +67,5 @@ public static class VoxelData
         new Vector2(1.0f, 1.0f)
     };
 
+    
 }

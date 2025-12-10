@@ -19,6 +19,10 @@ public class World : MonoBehaviour
     List<ChunkCoord> activeChunks = new List<ChunkCoord>();
     ChunkCoord playerLastChunkCoord;
     ChunkCoord playerChunkCoord;
+    public float noiseScale = 0.25f;
+    public int grassHeight = 20;
+    public int dirtHeight = 10;
+    //public int stoneHeight = 1;
 
     private void Start()
     {
@@ -116,26 +120,26 @@ public class World : MonoBehaviour
             return 1;
 
         //basic terrain pass//
-        int terrainHeight = Mathf.FloorToInt(Noise.get2dPerlin(new Vector2(pos.x, pos.z), 193, 0.25f) * VoxelData.chunkHeight);
-
+        int terrainHeight = Mathf.FloorToInt(Noise.get2dPerlin(new Vector2(pos.x, pos.z), 193, noiseScale) * VoxelData.chunkHeight);
+        /*
         if (yPos <= terrainHeight)
             return 2;
         else                        //THIS IS WHERE YOU LEFT OFF
             return 0;
 
-
-        /*
-        if (pos.y == 0)
-           return  1;
-        else if (pos.y == VoxelData.chunkHeight - 1)
-           return 3;
-        else if (pos.y < ((VoxelData.chunkHeight - 1) / 2))
-            return 2;
-        else if (pos.y > ((VoxelData.chunkHeight - 1) / 2))
-            return 4;
-        else
-            return 2;
         */
+        
+        if (yPos == 0)
+           return  1;
+        else if (yPos <= terrainHeight &&yPos >= grassHeight)
+           return 3;
+        else if (yPos <= terrainHeight&&yPos >= dirtHeight)
+            return 4;
+        else if (yPos <= terrainHeight&&yPos < dirtHeight)
+            return 2;
+        else
+            return 0;
+        
     }
 
 
