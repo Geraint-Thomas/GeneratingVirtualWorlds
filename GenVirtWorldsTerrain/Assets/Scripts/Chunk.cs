@@ -18,6 +18,8 @@ public class Chunk
     byte[,,] voxelMap = new byte[VoxelData.chunkWidth, VoxelData.chunkHeight, VoxelData.chunkWidth];
 
     private World world;
+    private bool _isActive;
+    public bool isVoxelMapPopulated = false;
 
     /*
     void Start()
@@ -33,16 +35,25 @@ public class Chunk
     }
     */
 
-    public Chunk (ChunkCoord _coord, World _world)
+    public Chunk (ChunkCoord _coord, World _world, bool genOnLoad)
     {
         world = _world;
         coord = _coord;
-        
+        _isActive = true;
+        if(genOnLoad)
+        {
+            Init();
+        }
 
+        
+    }
+
+    public void Init()
+    {
         chunkObject = new GameObject();
         meshFilter = chunkObject.AddComponent<MeshFilter>();
         meshRenderer = chunkObject.AddComponent<MeshRenderer>();
-       
+
 
         meshRenderer.material = world.material;
         chunkObject.transform.SetParent(world.transform);
@@ -126,13 +137,20 @@ public class Chunk
                 }
             }
         }
-
+        isVoxelMapPopulated = true;
     }
 
     public bool isActive
     {
-        get{ return chunkObject.activeSelf; }
-        set{ chunkObject.SetActive(value); }
+        get{ return _isActive; }
+        set
+        { 
+            _isActive = value; 
+            if(chunkObject != null)
+            {
+                chunkObject.SetActive(value);
+            }
+        }
     }
 
     public Vector3 position
@@ -147,9 +165,21 @@ public class Chunk
         int z = Mathf.FloorToInt(pos.z);
 
         if (!isVoxelInChunk(x, y, z)) //return false;
-            return world.blockTypes[world.GetVoxel(pos + position)].isSolid;
+            return world.checkForVoxel(pos);
 
         return world.blockTypes[voxelMap[x, y, z]].isSolid;
+    }
+
+    public byte getVoxelFromVector3(Vector3 pos)
+    {
+        int xCheck = Mathf.FloorToInt(pos.x);
+        int yCheck = Mathf.FloorToInt(pos.y);
+        int zCheck = Mathf.FloorToInt(pos.z);
+
+        xCheck -= Mathf.FloorToInt(chunkObject.transform.position.x);
+        zCheck -= Mathf.FloorToInt(chunkObject.transform.position.z);
+
+        return voxelMap[xCheck, yCheck, zCheck];
     }
 
     bool isVoxelInChunk(int x, int y, int z)
@@ -200,6 +230,21 @@ public class ChunkCoord
 {
     public int x;
     public int z;
+
+    public ChunkCoord()
+    {
+        x = 0;
+        z = 0; 
+    }
+
+    public ChunkCoord(Vector3 pos)
+    {
+        int xCheck = Mathf.FloorToInt(pos.x);
+        int zCheck = Mathf.FloorToInt(pos.z);
+
+        x = xCheck / VoxelData.chunkWidth;
+        z = zCheck / VoxelData.chunkWidth;
+    }
 
     public ChunkCoord(int _x, int _z)
     {

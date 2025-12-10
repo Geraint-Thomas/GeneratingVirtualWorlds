@@ -5,44 +5,13 @@ using UnityEngine.InputSystem;
 
 public class PlayerControler : MonoBehaviour
 {
-    /*
-    [SerializeField] Transform camera;
-    [SerializeField] Transform player;
-    private Vector3 playerPos;
-    public float speed = 1;
-
-
-    void Start()
-    {
-        playerPos = player.position;
-    }
-
-    void Update()
-    {
-        if(Keyboard.current.wKey.isPressed)
-        {
-            playerPos.x += 0.01f * speed * Time.deltaTime;
-        }
-
-
-
-        if(player.position != playerPos)
-        {
-            player.position = playerPos;
-            camera.position = new Vector3(playerPos.x, playerPos.y + 0.5f, playerPos.z);
-        }
-    }
-
-    */
-
-    
+   
     //movement set up
     private GameObject player;
     private Rigidbody rigidbody;
     [SerializeField] float speed = 5.0f;
     [SerializeField] Transform camera;
     
-
 
     //for checking if player is toutching ground
     public float jumpHeight;
@@ -57,7 +26,7 @@ public class PlayerControler : MonoBehaviour
         rigidbody.freezeRotation = true;
         camera.GetComponent<CameraFollow>().player = this.player.transform;
         camera.GetComponent<CameraFollow>().cameraOffset = new Vector3(0, 0, -20);
-        speed = 0.11f;
+        
         
     }
 
@@ -78,43 +47,27 @@ public class PlayerControler : MonoBehaviour
         Vector3 rightRelative = (Input.GetAxis("Horizontal") * speed) * camRight;
 
         Vector3 movementDirection = forwardsRelative + rightRelative;
-        
+
         //movement
-        rigidbody.AddForce(movementDirection, ForceMode.VelocityChange);
-        //rigidbody.velocity = new Vector3(movementDirection.x * speed, rigidbody.velocity.y * speed, movementDirection.z * speed);
+        //rigidbody.AddForce(movementDirection, ForceMode.VelocityChange);
 
-       
+        float vertical = 0f;
+
         //jump check
-        if (Keyboard.current.spaceKey.wasPressedThisFrame)//&& grounded)
+        if (Input.GetKey(KeyCode.Space))
         {
-            rigidbody.AddForce(transform.up * jumpHeight, ForceMode.Impulse);
+            //rigidbody.AddForce(transform.up * jumpHeight, ForceMode.Impulse);
+            vertical = jumpHeight * speed;
+        }
+        else if (Input.GetKey(KeyCode.LeftControl))
+        {
+            //rigidbody.AddForce(transform.up * jumpHeight, ForceMode.Impulse);
+            vertical = -jumpHeight * speed;
         }
 
-        
-
+        rigidbody.linearVelocity = new Vector3(movementDirection.x, movementDirection.y + vertical, movementDirection.z);
     }
 
-
-    private void OnCollisionEnter(Collision collision)
-    {
-        if (collision.gameObject.tag == "ground")
-        {
-            grounded = true;
-        }
-       
-
-    }
-
-    private void OnCollisionExit(Collision collision)
-    {
-        if (collision.gameObject.tag == "ground")
-        {
-            grounded = false;
-        }
-        
-
-    }
-    
 }
 
 
