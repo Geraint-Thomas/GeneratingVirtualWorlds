@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System;
 using System.Collections;
+using System.Diagnostics;
 
 
 public class World : MonoBehaviour
@@ -24,20 +25,27 @@ public class World : MonoBehaviour
     public int grassHeight = 20;
     public int dirtHeight = 10;
     //public int stoneHeight = 1;
-
+    public int treeSeed = 1;
+    public float treeNoiseScale = 1;
     List<ChunkCoord> chunksToCreate = new List<ChunkCoord>();
     private bool isCreatingChunks;
-
+    
 
     private void Start()
     {
 
         UnityEngine.Random.InitState(seed);
+        CreatedNoise.updatedSeed();
+        
+        //int mapWidth, int mapHeight, int seed, float scale, int octaves, float persistance, float lacunarity, Vector2 offset, NormalizeMode normalizeMode
+       // treeNoise = createdNoise.GenerateNoiseMap(VoxelData.worldSizeInVoxels, VoxelData.worldSizeInVoxels, treeSeed, treeNoiseScale, 5, 5.0f, 5.0f, new Vector2(0.0f, 0.0f));
 
         //Chunk chunk = new Chunk(new ChunkCoord(0,0), this);
         spawn = new Vector3((VoxelData.worldSizeInChunks * VoxelData.chunkWidth) / 2f, VoxelData.chunkHeight +2, (VoxelData.worldSizeInChunks * VoxelData.chunkWidth) / 2f);
         GenerateWorld();
         playerLastChunkCoord = GetChunkCoord(player.position);
+
+
         
     }
 
@@ -179,9 +187,8 @@ public class World : MonoBehaviour
             return 2;
         else                        //THIS IS WHERE YOU LEFT OFF
             return 0;
-
         */
-        
+       
         if (yPos == 0)
            return  1;
         else if (yPos <= terrainHeight &&yPos >= grassHeight)

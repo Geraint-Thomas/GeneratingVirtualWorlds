@@ -372,7 +372,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 923f36d14ce1eb047930975a004d4603, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerControler
-  speed: 1
+  speed: 5
   camera: {fileID: 330585546}
   jumpHeight: 5
   grounded: 0
@@ -398,7 +398,7 @@ Rigidbody:
     m_Bits: 0
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
-  m_UseGravity: 1
+  m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
@@ -2563,7 +2563,7 @@ Transform:
   m_GameObject: {fileID: 1347273349}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.32909, y: 2.20017, z: 0.90077}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2624,11 +2624,29 @@ MonoBehaviour:
     backFaceTexture: 1
     leftFaceTexture: 1
     rightFaceTexture: 1
+  - blockName: Log
+    isSolid: 1
+    topFaceTexture: 6
+    bottomFaceTexture: 6
+    frontFaceTexture: 5
+    backFaceTexture: 5
+    leftFaceTexture: 5
+    rightFaceTexture: 5
+  - blockName: Leaves
+    isSolid: 1
+    topFaceTexture: 7
+    bottomFaceTexture: 7
+    frontFaceTexture: 7
+    backFaceTexture: 7
+    leftFaceTexture: 7
+    rightFaceTexture: 7
   player: {fileID: 159988796}
   spawn: {x: 0, y: 0, z: 0}
   noiseScale: 0.25
   grassHeight: 20
   dirtHeight: 10
+  treeSeed: 1
+  treeNoiseScale: 0.5
 --- !u!1 &1601641757
 GameObject:
   m_ObjectHideFlags: 0

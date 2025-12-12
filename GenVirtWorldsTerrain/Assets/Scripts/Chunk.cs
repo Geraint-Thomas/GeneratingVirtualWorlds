@@ -16,11 +16,13 @@ public class Chunk
     List<Vector2> uvs = new List<Vector2>();
 
     byte[,,] voxelMap = new byte[VoxelData.chunkWidth, VoxelData.chunkHeight, VoxelData.chunkWidth];
+    int[,] voxelMaxHeight = new int[VoxelData.chunkWidth, VoxelData.chunkWidth];
 
     private World world;
     private bool _isActive;
     public bool isVoxelMapPopulated = false;
 
+    List<Tree> trees = new List<Tree>();
     /*
     void Start()
     {
@@ -59,13 +61,13 @@ public class Chunk
         chunkObject.transform.SetParent(world.transform);
         chunkObject.transform.position = new Vector3(coord.x * VoxelData.chunkWidth, 0f, coord.z * VoxelData.chunkWidth);
         chunkObject.name = "Chunk" + coord.x + ", " + coord.z;
-        chunkObject.tag = "ground";
 
         PopulateVoxelMap();
 
         createMeshData();
 
         createMesh();
+
     }
 
     void AddVoxelDataToChunk(Vector3 pos)
@@ -107,6 +109,8 @@ public class Chunk
 
             }
         }
+        
+        
     }
 
     void createMeshData()
@@ -118,26 +122,44 @@ public class Chunk
                 for (int z = 0; z< VoxelData.chunkWidth; z++)
                 {
                     if (world.blockTypes[voxelMap[x,y,z]].isSolid)
+                    {
                         AddVoxelDataToChunk(new Vector3(x, y, z));
+
+                        //check if tree should be created on voxel
+                        if (CreatedNoise.generateNoise(new Vector2(x + position.x, z + position.z), world.treeNoiseScale) > 0.95 && !treeExsists(new Vector3(x + position.x, voxelMaxHeight[x, z] + 1, z + position.z)))
+                        {
+                            
+                            trees.Add(new Tree(world, new Vector3(x + position.x, voxelMaxHeight[x,z] +1, z + position.z)));
+                        }
+                    }
+                        
                 }
             }
         }
+
     }
 
     void PopulateVoxelMap()
     {
 
-        for (int y = 0; y < VoxelData.chunkHeight; y++)
+        for (int z = 0; z < VoxelData.chunkWidth; z++)
         {
             for (int x = 0; x < VoxelData.chunkWidth; x++)
             {
-                for (int z = 0; z < VoxelData.chunkWidth; z++)
+                for (int y = 0; y < VoxelData.chunkHeight; y++)
                 {
                     voxelMap[x,y,z] = world.GetVoxel(new Vector3(x,y,z) +position);
+
+                    if (voxelMap[x,y,z] != 0 && voxelMaxHeight[x ,z] < (int)(y + position.y))
+                    {
+                        
+                        voxelMaxHeight[x, z] = (int)(y + position.y);
+                    }
                 }
             }
         }
         isVoxelMapPopulated = true;
+
     }
 
     public bool isActive
@@ -149,6 +171,12 @@ public class Chunk
             if(chunkObject != null)
             {
                 chunkObject.SetActive(value);
+                
+                foreach (Tree t in trees)
+                {
+                    t.treeObject.SetActive(value);
+                }
+                
             }
         }
     }
@@ -224,6 +252,17 @@ public class Chunk
         //need to go back and change how th uvs work in order to make this work
 
     }
+
+    bool treeExsists(Vector3 _pos)
+    {
+        foreach(Tree t in trees)
+        {
+            if(t.vec ==  _pos) 
+                return true;
+        }
+        return false;
+    }
+
 }
 
 public class ChunkCoord
